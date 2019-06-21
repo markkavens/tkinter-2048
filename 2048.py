@@ -1,20 +1,25 @@
 import tkinter as tk
+from tkinter import messagebox
 import random
 
 arr = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
 score = 0
+rec = []
+nums = []
 def showText():
      y=70
+     j=0
      for row in arr:
           x=70
           for i in range(4):
                if row[i]==0:
-                    canvas.create_rectangle(x-50,y-50,x+50,y+50,fill="white")
+                    canvas.itemconfig(rec[j],fill="white")
+                    canvas.itemconfig(nums[j],text="")
                else:
-                    canvas.create_rectangle(x-50,y-50,x+50,y+50,fill="#60d66e")
-                    canvas.create_text((x,y),font = ("arial", 30),text=row[i])
+                    canvas.itemconfig(rec[j],fill=colorpicker(row[i]))
+                    canvas.itemconfig(nums[j],text=row[i])
                x=x+120
-               wind.update()
+               j=j+1
           y=y+120
      label.config(text="Score : "+str(score))
                          
@@ -33,7 +38,6 @@ def shift(row):
      shiftedList = fusion(shiftedList)
      while len(shiftedList) != 4:
           shiftedList.append(0)
-     #print(shiftedList)
      return shiftedList
 
 
@@ -51,7 +55,6 @@ def fusion(shiftedList):
                     j=j+1
                shiftedList.pop(j)
           i=i+1
-     #print(shiftedList)
      return shiftedList
 
 def findEmpty():
@@ -70,6 +73,8 @@ def gen2():
           j = ind%10
           i = (ind//10)%10
           arr[i][j] = 2
+     else:
+          gameover()
                 
 
 def up(event):
@@ -102,7 +107,30 @@ def left(event):
           arr[i] = shift(arr[i])
      gen2()
      showText()
-  
+
+def colorpicker(val):
+     if val == 2:
+          return "#71f289"
+     elif val==4:
+          return "#5eed79"
+     elif val==8:
+          return "#3ee05d"
+     elif val==16:
+          return "#2bff35"
+     elif val==32:
+          return "#33e054"
+     elif val==64:
+          return "#2ee851"
+     elif val==128:
+          return "#3df762"
+     elif val==216:
+          return "#2ff957"
+     elif val==512:
+          return "#29f250"
+     elif val==1024:
+          return "#1eff4a"
+     elif val==2048:
+          return "#0cf967"  
 
 def game():
      global score
@@ -117,6 +145,37 @@ def game():
      arr[i][j] = 2
      showText()
 
+def gameover():
+     lost = True
+     for i in range(4):
+          for j in range(4):
+               if i-1 > 0:
+                    if arr[i-1][j]==arr[i][j]:
+                         lost = False
+               if i+1 < 4:
+                    if arr[i+1][j]==arr[i][j]:
+                         lost = False
+               if j-1 > 0:
+                    if arr[i][j-1]==arr[i][j]:
+                         lost = False
+               if j+1 < 4:
+                    if arr[i][j+1]==arr[i][j]:
+                         lost = False
+     if lost == True :
+          messagebox.showinfo("Game Over","Your Score : "+str(score))
+               
+
+def draw():
+     y=70
+     for i in range(4):
+          x=70
+          for j in range(4):
+               rec.append(canvas.create_rectangle(x-50,y-50,x+50,y+50,fill="white"))
+               nums.append(canvas.create_text((x,y),font = ("arial", 30),text=""))
+               x=x+120
+          y=y+120
+
+
 wind = tk.Tk()
 wind.title("2048")
 frame = tk.Frame(wind)
@@ -128,25 +187,7 @@ bt.pack(side="left")
 
 canvas = tk.Canvas(wind, width = 500, height = 500, bg = 'black')
 canvas.pack()
-canvas.create_rectangle(20,20,120,120,fill="white")
-canvas.create_rectangle(140,20,240,120,fill="white")
-canvas.create_rectangle(260,20,360,120,fill="white")
-canvas.create_rectangle(380,20,480,120,fill="white")
-
-canvas.create_rectangle(20,140,120,240,fill="white")
-canvas.create_rectangle(140,140,240,240,fill="white")
-canvas.create_rectangle(260,140,360,240,fill="white")
-canvas.create_rectangle(380,140,480,240,fill="white")
-     
-canvas.create_rectangle(20,260,120,360,fill="white")
-canvas.create_rectangle(140,260,240,360,fill="white")
-canvas.create_rectangle(260,260,360,360,fill="white")
-canvas.create_rectangle(380,260,480,360,fill="white")
-
-canvas.create_rectangle(20,380,120,480,fill="white")
-canvas.create_rectangle(140,380,240,480,fill="white")
-canvas.create_rectangle(260,380,360,480,fill="white")
-canvas.create_rectangle(380,380,480,480,fill="white")
+draw()
 game()
 
 wind.bind('<Up>', up)
