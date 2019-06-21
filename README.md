@@ -1,1 +1,1 @@
-# tkinter-2048
+# Classic 2048 game using tkinter
