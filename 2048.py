@@ -123,7 +123,7 @@ def colorpicker(val):
           return "#2ee851"
      elif val==128:
           return "#3df762"
-     elif val==216:
+     elif val==256:
           return "#2ff957"
      elif val==512:
           return "#29f250"
